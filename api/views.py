@@ -110,7 +110,9 @@ def subscribe(request,id):
 
 
 
+
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_my_formations(request):
     subscribes = Subscribe.objects.filter(profile = request.user.id)
     serializer = SubscribeSerializer(subscribes , many=True)
