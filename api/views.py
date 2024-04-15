@@ -14,7 +14,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
-# Create your views here.
+
+
+
 
 @api_view(['POST','GET'])
 def get_Formations(request):
@@ -109,7 +111,6 @@ def subscribe(request,id):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def get_my_formations(request):
     subscribes = Subscribe.objects.filter(profile = request.user.id)
     serializer = SubscribeSerializer(subscribes , many=True)
