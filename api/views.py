@@ -99,16 +99,26 @@ def login_view(request):
 
 
 
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def subscribe(request,id):
-    formation = Formation.objects.get(id=id)
-    profile = Profile.objects.get(id=request.user.id)
-    subscribe = Subscribe.objects.create(formation = formation , profile = profile)
-    subscribe.save()
-    return Response({'message': 'Successfully subscribed to the formation.'}, status=status.HTTP_200_OK)
-
-
+def subscribe(request, id):
+    try:
+        formation = Formation.objects.get(id=id)
+        profile = Profile.objects.get(id=request.user.id)
+        
+        subscription, created = Subscribe.objects.get_or_create(formation=formation, profile=profile)
+        
+        if not created:
+            return Response({'message': 'Already subscribed to this formation.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response({'message': 'Successfully subscribed to the formation.'}, status=status.HTTP_200_OK)
+    except Formation.DoesNotExist:
+        return Response({'message': 'Formation does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+    except Profile.DoesNotExist:
+        return Response({'message': 'Profile does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['GET'])
@@ -117,3 +127,14 @@ def get_my_formations(request):
     subscribes = Subscribe.objects.filter(profile = request.user.id)
     serializer = SubscribeSerializer(subscribes , many=True)
     return Response(serializer.data)
+
+
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def undo_subscribtion(request,id):
+    try:
+        subscribe = Subscribe.objects.get(pk=id)
+        subscribe.delete()
+        return Response("Deleted",status=status.HTTP_200_OK)
+    except Subscribe.DoesNotExist:
+        return Response({'message': 'Subscribtion does not exist.'}, status=status.HTTP_404_NOT_FOUND)

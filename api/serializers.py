@@ -28,4 +28,4 @@ class SubscribeSerializer(serializers.ModelSerializer):
 
     class Meta : 
         model = Subscribe 
-        fields = ['profile','title','confirmed','localisation']
+        fields = ['id','profile','title','confirmed','localisation']
