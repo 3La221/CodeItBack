@@ -129,7 +129,7 @@ def get_my_formations(request):
     return Response(serializer.data)
 
 
-@api_view(["DELETE"])
+@api_view(["DELETE","GET"])
 @permission_classes([IsAuthenticated])
 def undo_subscribtion(request,id):
     try:
