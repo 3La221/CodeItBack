@@ -22,7 +22,7 @@ urlpatterns = [
     
     
     path('subscribe/<str:id>/' , views.subscribe , name="Subscribe"),
-    path('subscribes/',views.get_my_formations , name="My-Formations" )
+    path('subscribes/',views.get_my_formations , name="My-Formations" ),
     path('delete_subscribe/<int:id>',views.undo_subscribtion , name="Undo-Subscripton")
     
     
